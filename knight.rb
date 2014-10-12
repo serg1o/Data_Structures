@@ -1,21 +1,20 @@
 class Square
-  attr_accessor :x, :y, :connections
+  attr_accessor :connections
 
-  def initialize(x, y)
-    @x = x
-    @y = y
+  def initialize
     @connections = []
   end
 end
 
 class Board
-  attr_accessor :squares, :hypo_moves
+  attr_accessor :squares
+  attr_reader :hypo_moves
 
   def initialize
     @squares = []
     (0..7).each do |y|
       @squares.push([])
-      (0..7).each { |x| @squares[y].push(Square.new(x,y)) }
+      (0..7).each { @squares[y].push(Square.new) }
     end
     @hypo_moves = [[2, 1], [2, -1], [1, 2], [1, -2], [-2, 1], [-2, -1], [-1, 2], [-1, -2]]
     build_graph
@@ -24,8 +23,8 @@ class Board
   def build_graph
     (0..7).each do |y|
       (0..7).each do |x|
-        @hypo_moves.each do |sq|
-          squares[x][y].connections.push([x + sq[0], y + sq[1]]) if (((x + sq[0]).between?(0,7) && (y + sq[1]).between?(0,7)))
+        @hypo_moves.each do |move|
+          squares[x][y].connections.push([x + move[0], y + move[1]]) if (((x + move[0]).between?(0,7) && (y + move[1]).between?(0,7)))
         end
       end
     end
@@ -40,8 +39,8 @@ class Board
       children = squares[square_coord[0]][square_coord[1]].connections
       children.each do |next_child|
         queue.unshift(next_child)
-        came_from[next_child] = square_coord if !came_from.has_key?(next_child)
-        return came_from if ((target[0] == next_child[0]) && (target[1] == next_child[1]))
+        came_from[next_child] = square_coord unless came_from.has_key?(next_child)
+        return came_from if target == next_child
       end
     end
   end
@@ -71,7 +70,6 @@ def show_moves(moves)
 end
 
 c = Board.new
-
 show_moves(c.knight_moves([0,0], [3,3]))
 show_moves(c.knight_moves([0,0], [1,2]))
 show_moves(c.knight_moves([3,3], [0,0]))

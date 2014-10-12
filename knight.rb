@@ -32,8 +32,8 @@ class Board
   end
 
   def breadth_first_search(origin, target)
+    return nil if origin == target
     queue = [origin] 
-    return squares[origin[0]][origin[1]] if ((target[0] == origin[0]) && (target[1] == origin[1]))
     came_from = Hash.new #hash to store the path from origin to target in the form of 'key' came from 'value'
     while !queue.empty?
       square_coord = queue.pop
@@ -82,7 +82,6 @@ show_moves(c.knight_moves([4,4], [3,3]))
 show_moves(c.knight_moves([1,6], [6,1]))
 show_moves(c.knight_moves([3,3], [7,6]))
 show_moves(c.knight_moves([1,0], [6,0]))
-
 
 #moves_count = []
 #(0..7).each do |x1|
